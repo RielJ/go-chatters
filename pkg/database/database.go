@@ -14,6 +14,10 @@ import (
 
 type Service interface {
 	Health() map[string]string
+
+	Exec(query string, args ...interface{}) (sql.Result, error)
+	QueryRow(query string, args ...interface{}) *sql.Row
+	Query(query string, args ...interface{}) (*sql.Rows, error)
 }
 
 type service struct {
@@ -29,13 +33,33 @@ var (
 )
 
 func New() Service {
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", username, password, host, port, database)
+	connStr := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		username,
+		password,
+		host,
+		port,
+		database,
+	)
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
+	InitDB(db)
 	s := &service{db: db}
 	return s
+}
+
+func (s *service) Exec(query string, args ...interface{}) (sql.Result, error) {
+	return s.db.Exec(query, args...)
+}
+
+func (s *service) QueryRow(query string, args ...interface{}) *sql.Row {
+	return s.db.QueryRow(query, args...)
+}
+
+func (s *service) Query(query string, args ...interface{}) (*sql.Rows, error) {
+	return s.db.Query(query, args...)
 }
 
 func (s *service) Health() map[string]string {

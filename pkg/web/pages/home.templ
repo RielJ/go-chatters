@@ -1,0 +1,19 @@
+package pages
+
+import (
+	"github.com/rielj/go-chatters/pkg/web/layout"
+)
+
+templ Home() {
+	@layout.Base() {
+		<div class="h-[100vh] flex justify-center items-center">
+			<div class="p-12 rounded-lg">
+				<h1>Go Chatters</h1>
+				<p>Welcome to go Chatters</p>
+				<button>
+					<a href="/login">Login</a>
+				</button>
+			</div>
+		</div>
+	}
+}

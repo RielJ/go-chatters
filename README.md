@@ -1,4 +1,4 @@
-# Project go-chatters
+# Project github.com/rielj/go-chatters
 
 One Paragraph of project description goes here
 

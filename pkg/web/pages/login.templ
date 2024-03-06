@@ -1,0 +1,36 @@
+package pages
+
+import (
+	"github.com/rielj/go-chatters/pkg/web/layout"
+)
+
+templ Login() {
+	@layout.Base() {
+		<div class="h-[100vh] flex justify-center items-center" hx-ext="response-targets">
+			<form
+				hx-post="/api/login"
+				hx-trigger="submit"
+				hx-target-401="#login-error"
+				hx-target="#login-error"
+				hx-swap="innerHTML"
+				class="p-12 rounded-lg bg-gray-600 flex flex-col gap-4"
+			>
+				<h1>Login</h1>
+				<input type="text" placeholder="Username" id="username" name="username"/>
+				<input type="password" placeholder="Password" id="password" name="password"/>
+				<div id="login-error"></div>
+				<div class="">
+					<button class="px-4 py-2 bg-green-900 rounded-sm" type="submit">LOGIN</button>
+				</div>
+				<p>
+					Don’t have an account yet?
+					<a href="/register">Register</a>
+				</p>
+			</form>
+		</div>
+	}
+}
+
+templ LoginError() {
+	<p class="text-red-500">Invalid username or password</p>
+}

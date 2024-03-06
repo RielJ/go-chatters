@@ -9,21 +9,25 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
-	"go-chatters/internal/database"
+	"github.com/rielj/go-chatters/pkg/auth"
+	"github.com/rielj/go-chatters/pkg/database"
 )
 
 type Server struct {
 	port int
 
-	db database.Service
+	db   database.Service
+	auth auth.Auth
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	db := database.New()
 	NewServer := &Server{
 		port: port,
 
-		db: database.New(),
+		db:   db,
+		auth: auth.NewTokenAuth(),
 	}
 
 	// Declare Server config

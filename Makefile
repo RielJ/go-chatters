@@ -6,7 +6,13 @@ all: build
 build:
 	@echo "Building..."
 	@templ generate
+	@pnpm tailwindcss -i pkg/web/static/css/tailwind.css -o pkg/web/static/css/main.css
 	@go build -o main cmd/api/main.go
+
+generate:
+	@echo "Generating..."
+	@templ generate
+	@pnpm tailwindcss -i pkg/web/static/css/tailwind.css -o pkg/web/static/css/main.css
 
 # Run the application
 run:
@@ -19,6 +25,15 @@ docker-run:
 	else \
 		echo "Falling back to Docker Compose V1"; \
 		docker-compose up; \
+	fi
+
+# Create DB container in detached mode
+docker-run-detached:
+	@if docker compose up -d 2>/dev/null; then \
+		: ; \
+	else \
+		echo "Falling back to Docker Compose V1"; \
+		docker-compose up -d; \
 	fi
 
 # Shutdown DB container

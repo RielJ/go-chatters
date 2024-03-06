@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"go-chatters/internal/server"
+
+	"github.com/rielj/go-chatters/pkg/server"
 )
 
 func main() {
-
 	server := server.NewServer()
 
 	err := server.ListenAndServe()
