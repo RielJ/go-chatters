@@ -12,12 +12,10 @@ import (
 
 var secretKey = os.Getenv("JWT_SECRET_KEY")
 
-type TokenAuth struct {
-	secretKey []byte
-}
+type TokenAuth struct{}
 
 func NewTokenAuth() Auth {
-	return &TokenAuth{secretKey: []byte(secretKey)}
+	return &TokenAuth{}
 }
 
 func (t *TokenAuth) GenerateToken(user database.User) (string, error) {
@@ -34,7 +32,7 @@ func (t *TokenAuth) GenerateToken(user database.User) (string, error) {
 		jwt.MapClaims(payload),
 	)
 
-	token, err := claims.SignedString(t.secretKey)
+	token, err := claims.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
 	}
@@ -43,7 +41,7 @@ func (t *TokenAuth) GenerateToken(user database.User) (string, error) {
 
 func (t *TokenAuth) ValidateToken(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return t.secretKey, nil
+		return []byte(secretKey), nil
 	})
 	if err != nil {
 		return nil, err

@@ -12,11 +12,7 @@ type GetHealthHandler struct {
 	db database.Service
 }
 
-type GetHealthHandlerParams struct {
-	Database database.Service
-}
-
-func NewGetHealthHandler(params GetHealthHandlerParams) *GetHealthHandler {
+func NewGetHealthHandler(params HandlerParams) *GetHealthHandler {
 	return &GetHealthHandler{
 		db: params.Database,
 	}

@@ -12,7 +12,7 @@ import (
 
 type GetRegisterHandler struct{}
 
-func NewGetRegisterHandler() *GetRegisterHandler {
+func NewGetRegisterHandler(params HandlerParams) *GetRegisterHandler {
 	return &GetRegisterHandler{}
 }
 
@@ -25,11 +25,7 @@ type PostRegisterHandler struct {
 	ur repository.UserRepository
 }
 
-type PostRegisterHandlerParams struct {
-	Database database.Service
-}
-
-func NewPostRegisterHandler(params PostRegisterHandlerParams) *PostRegisterHandler {
+func NewPostRegisterHandler(params HandlerParams) *PostRegisterHandler {
 	return &PostRegisterHandler{
 		db: params.Database,
 		ur: repository.NewUserRepository(repository.UserRepositoryParams{

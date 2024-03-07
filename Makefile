@@ -28,7 +28,7 @@ docker-run:
 	fi
 
 # Create DB container in detached mode
-docker-run-detached:
+docker-run-d:
 	@if docker compose up -d 2>/dev/null; then \
 		: ; \
 	else \

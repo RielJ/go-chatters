@@ -12,11 +12,7 @@ type GetUsersHandler struct {
 	ur       repository.UserRepository
 }
 
-type UsersHandlerParams struct {
-	Database database.Service
-}
-
-func NewGetUsersHandler(params UsersHandlerParams) *GetUsersHandler {
+func NewGetUsersHandler(params HandlerParams) *GetUsersHandler {
 	return &GetUsersHandler{
 		Database: params.Database,
 		ur: repository.NewUserRepository(repository.UserRepositoryParams{
@@ -38,7 +34,7 @@ type DeleteUsersHandler struct {
 	ur       repository.UserRepository
 }
 
-func NewDeleteUsersHandler(params UsersHandlerParams) *DeleteUsersHandler {
+func NewDeleteUsersHandler(params HandlerParams) *DeleteUsersHandler {
 	return &DeleteUsersHandler{
 		Database: params.Database,
 		ur: repository.NewUserRepository(repository.UserRepositoryParams{
@@ -61,7 +57,7 @@ type PostUsersHandler struct {
 	ur       repository.UserRepository
 }
 
-func NewPostUsersHandler(params UsersHandlerParams) *PostUsersHandler {
+func NewPostUsersHandler(params HandlerParams) *PostUsersHandler {
 	return &PostUsersHandler{
 		Database: params.Database,
 		ur: repository.NewUserRepository(repository.UserRepositoryParams{
