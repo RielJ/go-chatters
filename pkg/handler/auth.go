@@ -3,8 +3,6 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"strings"
-	"time"
 
 	"github.com/labstack/echo/v4"
 
@@ -15,14 +13,11 @@ import (
 
 func (h *Handler) GetLoginHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		token, err := c.Cookie("x-auth-token")
+		token, err := getJWTToken(c)
 		if err != nil {
 			return render(pages.Login(), c)
 		}
-		fmt.Println("token", token)
-		jwtClaims, err := h.Auth.ValidateToken(
-			strings.TrimLeft(token.String(), "x-auth-token="),
-		)
+		jwtClaims, err := h.Auth.ValidateToken(token)
 		if err != nil {
 			return c.Redirect(http.StatusFound, "/")
 		}
@@ -60,15 +55,7 @@ func (h *Handler) PostLoginHandler() echo.HandlerFunc {
 			)
 		}
 
-		cookie := new(http.Cookie)
-		cookie.Name = "x-auth-token"
-		cookie.Value = token
-		cookie.Expires = time.Now().Add(7 * 24 * time.Hour)
-		cookie.Path = "/"
-		cookie.HttpOnly = true
-		cookie.Secure = true
-		cookie.SameSite = http.SameSiteLaxMode
-		c.SetCookie(cookie)
+		setJWTToken(c, token)
 
 		c.Response().Header().Set("HX-Redirect", "/")
 		return c.HTML(http.StatusOK, "Logged in successfully!")
@@ -130,13 +117,7 @@ func (h *Handler) PostRegisterHandler() echo.HandlerFunc {
 
 func (h *Handler) PostLogoutHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cookie := new(http.Cookie)
-		cookie.Name = "x-auth-token"
-		cookie.Value = ""
-		cookie.Expires = time.Now()
-		cookie.Path = "/"
-		c.SetCookie(cookie)
-
+		clearJWTToken(c)
 		return c.Redirect(http.StatusFound, "/login")
 	}
 }

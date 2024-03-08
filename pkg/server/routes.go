@@ -26,7 +26,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	guarded := e.Group("")
 	guarded.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey:  []byte(secretKey),
-		TokenLookup: "cookie:x-auth-token",
+		TokenLookup: "cookie:x-auth-token, header:x-auth-token",
 		ErrorHandler: func(c echo.Context, err error) error {
 			return c.Redirect(http.StatusTemporaryRedirect, "/login")
 		},
