@@ -25,8 +25,8 @@ type Server struct {
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	db := database.New()
-	auth := auth.NewTokenAuth()
-	repository := repository.Init(&db)
+	auth := auth.New()
+	repository := repository.New(&db)
 	NewServer := &Server{
 		port: port,
 

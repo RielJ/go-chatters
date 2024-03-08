@@ -14,7 +14,7 @@ var secretKey = os.Getenv("JWT_SECRET_KEY")
 
 type TokenAuth struct{}
 
-func NewTokenAuth() *TokenAuth {
+func New() *TokenAuth {
 	return &TokenAuth{}
 }
 

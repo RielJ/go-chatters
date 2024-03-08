@@ -40,7 +40,7 @@ func Home(firstname string, lastname string) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(firstname)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/web/pages/home.templ`, Line: 12, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/web/pages/home.templ`, Line: 12, Col: 18}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -53,13 +53,13 @@ func Home(firstname string, lastname string) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(lastname)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/web/pages/home.templ`, Line: 12, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/web/pages/home.templ`, Line: 12, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><form action=\"/api/logout\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"{ .csrfToken }\"> <button class=\"bg-red-500 text-white px-4 py-2 rounded-lg\" type=\"submit\">Logout</button></form></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><form action=\"/api/logout\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"{ .csrfToken }\"> <button class=\"bg-red-500 text-white px-4 py-2 rounded-lg\" type=\"submit\">Logout</button></form><p class=\"p-5 text-xl text-red-500\">TEST COLOR</p></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -1,18 +1,26 @@
 package layout
 
+import "fmt"
+
+func getContext(c context.Context) context.Context {
+	fmt.Println("getContext", c)
+	return c
+}
+
 templ Base() {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<meta charset="utf-8"/>
 			<title>Go Blueprint Hello</title>
-			<link rel="stylesheet" href="/static/css/main.css" type="text/css"/>
-			<script src="/static/js/htmx.min.js"></script>
-			<script src="/static/js/response-target.js"></script>
+			<link rel="stylesheet" type="text/css" href="/static/css/main.css" nonce={ ctx.Value("twNonce").(string) }/>
+			<script src="/static/js/htmx.min.js" nonce={ ctx.Value("htmxNonce").(string) }></script>
+			<script src="/static/js/response-target.js" nonce={ ctx.Value("responseTargetNonce").(string) }></script>
 		</head>
 		<body>
 			<main>
 				{ children... }
+				<pre>{ ctx.Value("twNonce").(string) }</pre>
 			</main>
 		</body>
 	</html>

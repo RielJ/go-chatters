@@ -6,7 +6,7 @@ type Repository struct {
 	User UserRepository
 }
 
-func Init(db *database.Service) Repository {
+func New(db *database.Service) Repository {
 	return Repository{
 		User: NewUserRepository(db),
 	}

@@ -5,11 +5,10 @@ import (
 	"os"
 
 	_ "github.com/joho/godotenv/autoload"
-	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/rielj/go-chatters/pkg/handler"
+	"github.com/rielj/go-chatters/pkg/middleware"
 	"github.com/rielj/go-chatters/pkg/web"
 )
 
@@ -20,17 +19,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	fileRoutes(e)
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.RemoveTrailingSlash())
-
-	guarded := e.Group("")
-	guarded.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey:  []byte(secretKey),
-		TokenLookup: "cookie:x-auth-token, header:x-auth-token",
-		ErrorHandler: func(c echo.Context, err error) error {
-			return c.Redirect(http.StatusTemporaryRedirect, "/login")
-		},
-	}))
+	middleware.New(e)
 
 	handler := handler.NewHandler(&handler.Handler{
 		Database:   s.db,
@@ -38,12 +27,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 		Repository: s.repository,
 	})
 
-	guarded.GET("/", handler.GetHomeHandler())
-
-	unguarded := e.Group("")
-	unguarded.GET("/login", handler.GetLoginHandler())
-	unguarded.GET("/register", handler.GetRegisterHandler())
-
+	e.GET("/login", handler.GetLoginHandler())
+	e.GET("/register", handler.GetRegisterHandler())
 	e.GET("/health", handler.GetHealthHandler())
 
 	api := e.Group("/api")
