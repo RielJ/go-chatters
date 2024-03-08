@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -29,32 +28,31 @@ func (s *Server) RegisterRoutes() http.Handler {
 		SigningKey:  []byte(secretKey),
 		TokenLookup: "cookie:x-auth-token",
 		ErrorHandler: func(c echo.Context, err error) error {
-			cookie, er := c.Cookie("x-auth-token")
-			fmt.Println("cookie", cookie)
-			fmt.Println("error,", er)
-
-			fmt.Println("error", err)
-			return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
+			return c.Redirect(http.StatusTemporaryRedirect, "/login")
 		},
 	}))
 
 	params := handler.HandlerParams{
-		Database: s.db,
-		Auth:     s.auth,
+		Database:   s.db,
+		Auth:       s.auth,
+		Repository: s.repository,
 	}
 
-	guarded.GET("/", handler.NewGetHomeHandler(params).Handle)
+	guarded.GET("/", handler.GetHomeHandler(&params))
 
 	unguarded := e.Group("")
-	unguarded.GET("/login", handler.NewGetLoginHandler(params).Handle)
-	unguarded.GET("/register", handler.NewGetRegisterHandler(params).Handle)
+	unguarded.GET("/login", handler.GetLoginHandler(params))
+	unguarded.GET("/register", handler.GetRegisterHandler(params))
 
-	e.GET("/health", handler.NewGetHealthHandler(params).Handle)
+	e.GET("/health", handler.GetHealthHandler(params))
 
 	api := e.Group("/api")
-	api.GET("/users", handler.NewGetUsersHandler(params).Handle)
-	api.POST("/login", handler.NewPostLoginHandler(params).Handle)
-	api.POST("/register", handler.NewPostRegisterHandler(params).Handle)
+	api.GET("/users", handler.GetUserHandler(params))
+	api.DELETE("/users", handler.DeleteUserHandler(params))
+	api.POST("/users", handler.PostUserHandler(params))
+	api.POST("/login", handler.PostLoginHandler(params))
+	api.POST("/logout", handler.PostLogoutHandler(params))
+	api.POST("/register", handler.PostRegisterHandler(params))
 
 	return e
 }

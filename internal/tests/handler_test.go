@@ -2,12 +2,14 @@ package tests
 
 import (
 	"encoding/json"
-	"github.com/labstack/echo/v4"
-	"github.com/rielj/go-chatters/internal/server"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
+
+	"github.com/labstack/echo/v4"
+
+	"github.com/rielj/go-chatters/internal/server"
 )
 
 func TestHandler(t *testing.T) {

@@ -1,43 +1,38 @@
 package pages
 
 import (
-	"github.com/rielj/go-chatters/pkg/web/layout"
+"github.com/rielj/go-chatters/pkg/web/layout"
 )
 
 templ Register() {
-	@layout.Base() {
-		<div class="h-[100vh] flex justify-center items-center" hx-ext="response-targets">
-			<form
-				hx-post="/api/register"
-				hx-trigger="submit"
-				hx-target-401="#register-error"
-				hx-swap="beforeend"
-				class="p-12 rounded-lg bg-gray-600 flex flex-col gap-4"
-			>
-				<h1>Register</h1>
-				<input type="text" name="firstname" placeholder="First Name" required/>
-				<input type="text" name="lastname" placeholder="Last Name" required/>
-				<input type="email" name="email" placeholder="Email" required/>
-				<input type="text" name="username" placeholder="Username" required/>
-				<input type="password" name="password" placeholder="Password" required/>
-				<input type="password" name="confirm-password" placeholder="Confirm Password" required/>
-				<div class="">
-					<button class="px-4 py-2 bg-green-900 rounded-sm" type="submit">Register</button>
-				</div>
-				<p>
-					Already have an account?
-					<a href="/login">Login</a>
-				</p>
-				<div id="register-error"></div>
-			</form>
+@layout.Base() {
+<div class="h-[100vh] flex justify-center items-center" hx-ext="response-targets">
+	<form hx-post="/api/register" hx-trigger="submit" hx-target="#register-error" hx-swap="innerHTML"
+		class="p-12 rounded-lg bg-gray-600 flex flex-col gap-4">
+		<h1>Register</h1>
+		<input type="text" name="firstname" placeholder="First Name" required />
+		<input type="text" name="lastname" placeholder="Last Name" required />
+		<input type="email" name="email" placeholder="Email" required />
+		<input type="text" name="username" placeholder="Username" required />
+		<input type="password" name="password" placeholder="Password" required />
+		<input type="password" name="confirm-password" placeholder="Confirm Password" required />
+		<div id="register-error"></div>
+		<div class="">
+			<button class="px-4 py-2 bg-green-900 rounded-sm" type="submit">Register</button>
 		</div>
-	}
+		<p>
+			Already have an account?
+			<a href="/login">Login</a>
+		</p>
+	</form>
+</div>
+}
 }
 
-templ RegisterError() {
-	<p class="text-red-500">Invalid username or password</p>
+templ RegisterError(message string) {
+<p class="text-red-500">{ message }</p>
 }
 
 templ RegisterSuccess() {
-	<p class="text-green-500">Registration successful</p>
+<p class="text-green-500">Registration successful</p>
 }

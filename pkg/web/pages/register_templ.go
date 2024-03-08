@@ -33,7 +33,7 @@ func Register() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"h-[100vh] flex justify-center items-center\" hx-ext=\"response-targets\"><form hx-post=\"/api/register\" hx-trigger=\"submit\" hx-target-401=\"#register-error\" hx-swap=\"beforeend\" class=\"p-12 rounded-lg bg-gray-600 flex flex-col gap-4\"><h1>Register</h1><input type=\"text\" name=\"firstname\" placeholder=\"First Name\" required> <input type=\"text\" name=\"lastname\" placeholder=\"Last Name\" required> <input type=\"email\" name=\"email\" placeholder=\"Email\" required> <input type=\"text\" name=\"username\" placeholder=\"Username\" required> <input type=\"password\" name=\"password\" placeholder=\"Password\" required> <input type=\"password\" name=\"confirm-password\" placeholder=\"Confirm Password\" required><div class=\"\"><button class=\"px-4 py-2 bg-green-900 rounded-sm\" type=\"submit\">Register</button></div><p>Already have an account? <a href=\"/login\">Login</a></p><div id=\"register-error\"></div></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"h-[100vh] flex justify-center items-center\" hx-ext=\"response-targets\"><form hx-post=\"/api/register\" hx-trigger=\"submit\" hx-target=\"#register-error\" hx-swap=\"innerHTML\" class=\"p-12 rounded-lg bg-gray-600 flex flex-col gap-4\"><h1>Register</h1><input type=\"text\" name=\"firstname\" placeholder=\"First Name\" required> <input type=\"text\" name=\"lastname\" placeholder=\"Last Name\" required> <input type=\"email\" name=\"email\" placeholder=\"Email\" required> <input type=\"text\" name=\"username\" placeholder=\"Username\" required> <input type=\"password\" name=\"password\" placeholder=\"Password\" required> <input type=\"password\" name=\"confirm-password\" placeholder=\"Confirm Password\" required><div id=\"register-error\"></div><div class=\"\"><button class=\"px-4 py-2 bg-green-900 rounded-sm\" type=\"submit\">Register</button></div><p>Already have an account? <a href=\"/login\">Login</a></p></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -53,7 +53,7 @@ func Register() templ.Component {
 	})
 }
 
-func RegisterError() templ.Component {
+func RegisterError(message string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -66,7 +66,20 @@ func RegisterError() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"text-red-500\">Invalid username or password</p>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"text-red-500\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(message)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/web/pages/register.templ`, Line: 32, Col: 33}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -85,9 +98,9 @@ func RegisterSuccess() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var4 == nil {
-			templ_7745c5c3_Var4 = templ.NopComponent
+		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var5 == nil {
+			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"text-green-500\">Registration successful</p>")

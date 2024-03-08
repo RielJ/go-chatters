@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"net/mail"
 
 	"github.com/rielj/go-chatters/pkg/database"
 	"github.com/rielj/go-chatters/pkg/tools"
@@ -16,10 +17,10 @@ type UserRepositoryParams struct {
 }
 
 func NewUserRepository(
-	parameters UserRepositoryParams,
+	db *database.Service,
 ) UserRepository {
 	return UserRepository{
-		db: parameters.Database,
+		db: *db,
 	}
 }
 
@@ -27,6 +28,26 @@ func (s *UserRepository) GetUserByUsername(username string) (*database.User, err
 	row := s.db.QueryRow(
 		"SELECT id, username, first_name, last_name, email, password FROM users WHERE username = $1;",
 		username,
+	)
+	var user database.User
+	err := row.Scan(
+		&user.ID,
+		&user.Username,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Password,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (s *UserRepository) GetUserByEmail(email string) (*database.User, error) {
+	row := s.db.QueryRow(
+		"SELECT id, username, first_name, last_name, email, password FROM users WHERE email = $1;",
+		email,
 	)
 	var user database.User
 	err := row.Scan(
@@ -127,6 +148,33 @@ func (s *UserRepository) DeleteUser(id string) error {
 	_, err := s.db.Exec("DELETE FROM users WHERE id = $1;", id)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+// Validate User Fields
+func (s *UserRepository) ValidateUserFields(user database.User) error {
+	if user.Username == "" {
+		return fmt.Errorf("username is required")
+	}
+	if user.Password == "" {
+		return fmt.Errorf("password is required")
+	}
+	if user.Email == "" {
+		return fmt.Errorf("email is required")
+	}
+	if _, err := mail.ParseAddress(user.Email); err != nil {
+		return fmt.Errorf("invalid email address")
+	}
+
+	if user.FirstName == "" {
+		return fmt.Errorf("first name is required")
+	}
+	if user.LastName == "" {
+		return fmt.Errorf("last name is required")
+	}
+	if len(user.Password) < 8 {
+		return fmt.Errorf("password must be at least 8 characters long")
 	}
 	return nil
 }

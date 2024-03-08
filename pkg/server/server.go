@@ -11,23 +11,28 @@ import (
 
 	"github.com/rielj/go-chatters/pkg/auth"
 	"github.com/rielj/go-chatters/pkg/database"
+	"github.com/rielj/go-chatters/pkg/repository"
 )
 
 type Server struct {
 	port int
 
-	db   database.Service
-	auth auth.Auth
+	db         database.Service
+	auth       auth.TokenAuth
+	repository repository.Repository
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	db := database.New()
+	auth := auth.NewTokenAuth()
+	repository := repository.Init(&db)
 	NewServer := &Server{
 		port: port,
 
-		db:   db,
-		auth: auth.NewTokenAuth(),
+		db:         db,
+		auth:       *auth,
+		repository: repository,
 	}
 
 	// Declare Server config
