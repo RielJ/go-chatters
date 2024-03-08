@@ -9,9 +9,9 @@ import (
 	"github.com/rielj/go-chatters/pkg/web/pages"
 )
 
-func GetHomeHandler(p *HandlerParams) echo.HandlerFunc {
+func (h *Handler) GetHomeHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		user, err := getAuthUser(c, p.Auth)
+		user, err := getAuthUser(c, h.Auth)
 		if err != nil {
 			fmt.Println(err)
 			return c.Redirect(http.StatusUnauthorized, "/login")

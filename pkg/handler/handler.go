@@ -12,14 +12,18 @@ import (
 	"github.com/rielj/go-chatters/pkg/repository"
 )
 
-type Handler interface {
-	Handle(c echo.Context) echo.HandlerFunc
-}
-
-type HandlerParams struct {
+type Handler struct {
 	Database   database.Service
 	Auth       auth.TokenAuth
 	Repository repository.Repository
+}
+
+func NewHandler(params *Handler) *Handler {
+	return &Handler{
+		Database:   params.Database,
+		Auth:       params.Auth,
+		Repository: params.Repository,
+	}
 }
 
 func render(comp templ.Component, c echo.Context) error {

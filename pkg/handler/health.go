@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetHealthHandler(params HandlerParams) echo.HandlerFunc {
+func (h *Handler) GetHealthHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, params.Database.Health())
+		return c.JSON(http.StatusOK, h.Database.Health())
 	}
 }

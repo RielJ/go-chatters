@@ -13,14 +13,14 @@ import (
 	"github.com/rielj/go-chatters/pkg/web/pages"
 )
 
-func GetLoginHandler(params HandlerParams) echo.HandlerFunc {
+func (h *Handler) GetLoginHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		token, err := c.Cookie("x-auth-token")
 		if err != nil {
 			return render(pages.Login(), c)
 		}
 		fmt.Println("token", token)
-		jwtClaims, err := params.Auth.ValidateToken(
+		jwtClaims, err := h.Auth.ValidateToken(
 			strings.TrimLeft(token.String(), "x-auth-token="),
 		)
 		if err != nil {
@@ -32,12 +32,12 @@ func GetLoginHandler(params HandlerParams) echo.HandlerFunc {
 	}
 }
 
-func PostLoginHandler(params HandlerParams) echo.HandlerFunc {
+func (h *Handler) PostLoginHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		username := c.FormValue("username")
 		password := c.FormValue("password")
 
-		user, err := params.Repository.User.GetUserByUsername(username)
+		user, err := h.Repository.User.GetUserByUsername(username)
 		if err != nil {
 			fmt.Println("user not found", err)
 			pages.LoginError().Render(c.Request().Context(), c.Response().Writer)
@@ -51,7 +51,7 @@ func PostLoginHandler(params HandlerParams) echo.HandlerFunc {
 			return c.HTML(http.StatusUnauthorized, "")
 		}
 
-		token, err := params.Auth.GenerateToken(*user)
+		token, err := h.Auth.GenerateToken(*user)
 		if err != nil {
 			fmt.Println("error generating token", err)
 			return c.JSON(
@@ -65,6 +65,9 @@ func PostLoginHandler(params HandlerParams) echo.HandlerFunc {
 		cookie.Value = token
 		cookie.Expires = time.Now().Add(7 * 24 * time.Hour)
 		cookie.Path = "/"
+		cookie.HttpOnly = true
+		cookie.Secure = true
+		cookie.SameSite = http.SameSiteLaxMode
 		c.SetCookie(cookie)
 
 		c.Response().Header().Set("HX-Redirect", "/")
@@ -72,13 +75,13 @@ func PostLoginHandler(params HandlerParams) echo.HandlerFunc {
 	}
 }
 
-func GetRegisterHandler(params HandlerParams) echo.HandlerFunc {
+func (h *Handler) GetRegisterHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		return render(pages.Register(), c)
 	}
 }
 
-func PostRegisterHandler(params HandlerParams) echo.HandlerFunc {
+func (h *Handler) PostRegisterHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var user database.User
 		user.Username = c.FormValue("username")
@@ -87,7 +90,7 @@ func PostRegisterHandler(params HandlerParams) echo.HandlerFunc {
 		user.FirstName = c.FormValue("firstname")
 		user.LastName = c.FormValue("lastname")
 
-		err := params.Repository.User.ValidateUserFields(user)
+		err := h.Repository.User.ValidateUserFields(user)
 		if err != nil {
 			pages.RegisterError(err.Error()).Render(c.Request().Context(), c.Response().Writer)
 			return c.HTML(http.StatusBadRequest, "")
@@ -99,21 +102,21 @@ func PostRegisterHandler(params HandlerParams) echo.HandlerFunc {
 			return c.HTML(http.StatusBadRequest, "")
 		}
 
-		_, err = params.Repository.User.GetUserByUsername(user.Username)
+		_, err = h.Repository.User.GetUserByUsername(user.Username)
 		if err == nil {
 			pages.RegisterError("Username already exists").
 				Render(c.Request().Context(), c.Response().Writer)
 			return c.HTML(http.StatusBadRequest, "")
 		}
 
-		_, err = params.Repository.User.GetUserByEmail(user.Email)
+		_, err = h.Repository.User.GetUserByEmail(user.Email)
 		if err == nil {
 			pages.RegisterError("Email already exists").
 				Render(c.Request().Context(), c.Response().Writer)
 			return c.HTML(http.StatusBadRequest, "")
 		}
 
-		_, err = params.Repository.User.CreateUser(user)
+		_, err = h.Repository.User.CreateUser(user)
 		if err != nil {
 			fmt.Println("ERROR: ", err)
 			return err
@@ -125,7 +128,7 @@ func PostRegisterHandler(params HandlerParams) echo.HandlerFunc {
 	}
 }
 
-func PostLogoutHandler(params HandlerParams) echo.HandlerFunc {
+func (h *Handler) PostLogoutHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		cookie := new(http.Cookie)
 		cookie.Name = "x-auth-token"

@@ -32,27 +32,27 @@ func (s *Server) RegisterRoutes() http.Handler {
 		},
 	}))
 
-	params := handler.HandlerParams{
+	handler := handler.NewHandler(&handler.Handler{
 		Database:   s.db,
 		Auth:       s.auth,
 		Repository: s.repository,
-	}
+	})
 
-	guarded.GET("/", handler.GetHomeHandler(&params))
+	guarded.GET("/", handler.GetHomeHandler())
 
 	unguarded := e.Group("")
-	unguarded.GET("/login", handler.GetLoginHandler(params))
-	unguarded.GET("/register", handler.GetRegisterHandler(params))
+	unguarded.GET("/login", handler.GetLoginHandler())
+	unguarded.GET("/register", handler.GetRegisterHandler())
 
-	e.GET("/health", handler.GetHealthHandler(params))
+	e.GET("/health", handler.GetHealthHandler())
 
 	api := e.Group("/api")
-	api.GET("/users", handler.GetUserHandler(params))
-	api.DELETE("/users", handler.DeleteUserHandler(params))
-	api.POST("/users", handler.PostUserHandler(params))
-	api.POST("/login", handler.PostLoginHandler(params))
-	api.POST("/logout", handler.PostLogoutHandler(params))
-	api.POST("/register", handler.PostRegisterHandler(params))
+	api.GET("/users", handler.GetUserHandler())
+	api.DELETE("/users", handler.DeleteUserHandler())
+	api.POST("/users", handler.PostUserHandler())
+	api.POST("/login", handler.PostLoginHandler())
+	api.POST("/logout", handler.PostLogoutHandler())
+	api.POST("/register", handler.PostRegisterHandler())
 
 	return e
 }
