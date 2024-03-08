@@ -55,10 +55,10 @@ func CSP() echo.MiddlewareFunc {
 				twNonce:             twNonce,
 			}
 
-			htmxCSSHash := "sha256-4Su6mBWzEIFnH4pAGMOuaeBrstwJN4Z3pq/s1Kn4/KQ="
+			htmxCSSHash := "sha256-d7rFBVhb3n/Drrf+EpNWYdITkos3kQRFpB0oSOycXg4="
 
 			cspHeader := fmt.Sprintf(
-				"default-src 'self'; script-src 'nonce-%s' 'nonce-%s'; style-src 'nonce-%s' '%s';",
+				"default-src 'self'; script-src 'nonce-%s' 'nonce-%s'; style-src 'self' 'nonce-%s' '%s';",
 				htmxNonce,
 				responseTargetNonce,
 				twNonce,
@@ -73,6 +73,22 @@ func CSP() echo.MiddlewareFunc {
 			cc.Context.Set("responseTargetNonce", responseTargetNonce)
 			cc.Context.Set("twNonce", twNonce)
 			return next(cc)
+		}
+	}
+}
+
+// func TextHTMLMiddleware(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		w.Header().Set("Content-Type", "text/html charset=utf-8")
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
+
+func TextHTML() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Response().Header().Set("Content-Type", "text/html; charset=utf-8")
+			return next(c)
 		}
 	}
 }
